@@ -21,6 +21,7 @@
 
 var MicTwi = (function (){
   var generateGetAPI = function (api) {
+    api = ((api.search(/\.json$/) > -1) ? api : api + '.json');
     return (arguments[1] == false) ?
       function (param, callback){ //oauth NOT required
         jsonp({
@@ -43,6 +44,7 @@ var MicTwi = (function (){
   }
   
   var generatePostAPI = function (api) {
+    api = ((api.search(/\.json$/) > -1) ? api : api + '.json');
     return function (param, callback) {
       param = param || {};
       jsonp({
@@ -97,23 +99,6 @@ var MicTwi = (function (){
           location.href = MicTwi.oauthProxy + '/auth/twitter?callback=' + MicTwi.callbackUrl;
         });
     },
-
-    /* Section below exists for convenience and an example.
-     * By binding the API functions to these objects provided here
-     * you can make your code look uniformed ;) */
-    statuses: {
-      update: generatePostAPI('statuses/update.json'),
-      home_timeline: generateGetAPI('statuses/home_timeline.json'),
-      mentions: generateGetAPI('statuses/mentions.json'),
-      /* Generate as much API functions as you want just like this. 
-       * Alternartively you can simply call MicTwi.generateGetAPI('whatever/provided.json') 
-       * from your code and use the resulted function to make requests.
-       * List of APIs twitter provides can be found at https://dev.twitter.com/docs/api */
-    },
-    search: {},       direct_messages: {},  followers: {},        friends: {}, 
-    friendships: {},  users: {},            favorites: {},        lists: {}, 
-    account: {},      notifications: {},    saved_searches: {},   trends: {}, 
-    geo: {},          blocks: {},           report_spam: {},      help: {},     legal: {},
   }
   
   /* For APIs which take variables (often they are user-ids or status-ids), 

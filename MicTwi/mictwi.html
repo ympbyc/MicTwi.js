@@ -41,11 +41,11 @@
       });
     }
     function tweet() {
-      MicTwi.statuses.update({status: $('#tweet')[0].value});
+      (MicTwi.generatePostAPI('statuses/update.json'))({status: $('#tweet')[0].value});
       jQuery("#tweet")[0].value = '';
     }
     function getTimeline () {
-      MicTwi.statuses.home_timeline({count:20}, function(res){
+      MicTwi.generateGetAPI('statuses/home_timeline.json')({count:20}, function(res){
         var str = '';
         for (var i=0; i<res.length; ++i) {
           str += res[i].user.screen_name + ":" + res[i].text + "\n";
