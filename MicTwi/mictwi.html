@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>microtwitter</title>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="mictwi.js"></script>
+  <style type="text/css">
+  <!--
+    body{
+      font-size: 13px;
+      margin: 10px;
+    }
+  -->
+  </style>
+</head>
+<body>
+  <div id="control">
+    <p>とにかく小さく簡単に。</p>
+    <textarea id="tweet" style="width: 80%; height:4em;"></textarea><br />
+  </div>
+  <div id="console_div"></div>
+  
+  <script type="text/javascript">
+    window.onload = function () {
+      MicTwi.ifAuthorized(
+        initialize,
+        function(){
+          jQuery("<button>twitter認証</button>")
+          .css({width : '40%', height : '60px'})
+          .click(initialize).appendTo("body");
+        });
+    }
+    function initialize () {
+      MicTwi.oauth(function(){
+        {
+          jQuery("<button>つぶやく</button>").click(tweet).appendTo("#control");
+        }
+        getTimeline();
+        setInterval(function(){getTimeline()}, 1000 * 40);
+      });
+    }
+    function tweet() {
+      MicTwi.statuses.update({status: $('#tweet')[0].value});
+      jQuery("#tweet")[0].value = '';
+    }
+    function getTimeline () {
+      MicTwi.statuses.home_timeline({count:20}, function(res){
+        var str = '';
+        for (var i=0; i<res.length; ++i) {
+          str += res[i].user.screen_name + ":" + res[i].text + "\n";
+        }
+        jQuery("#console_div")[0].innerText = str;
+      });
+    }
+  </script>
+</body>
+</html>

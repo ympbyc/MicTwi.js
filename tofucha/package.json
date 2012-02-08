@@ -1,0 +1,9 @@
+{
+  "name": "tofuchaproxy",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "2.3.10",
+    "ejs": "0.6.1",
+    "oauth":"0.9.5"
+  }
+}

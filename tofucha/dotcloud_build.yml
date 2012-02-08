@@ -1,0 +1,4 @@
+requirements:
+    - ejs@0.6.1
+    - express@2.3.10
+    - oauth@0.9.5
