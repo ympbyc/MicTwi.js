@@ -1,5 +1,5 @@
 var express = require('express'),
-    ejs = require('ejs'),
+    //ejs = require('ejs'),
     oauth = (new (require('oauth').OAuth)(
         'https://api.twitter.com/oauth/request_token',
         'https://api.twitter.com/oauth/access_token',
@@ -25,8 +25,8 @@ app.configure(function() {
     app.use(express.cookieParser());
     app.use(express.session({ secret: "tofucha" }));
     app.use(app.router);
-    app.register('.ejs', ejs);
-    app.set('view engine', 'ejs');
+    //app.register('.ejs', ejs);
+    //app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
     //app.use(express.static(__dirname + '/resources'));
 });
