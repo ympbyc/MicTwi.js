@@ -126,4 +126,10 @@ app.get('/is/authorized', function (req, res) {
     res.send(req.query.callback + '(false);', {'content-type' : 'text/javascript'}, 200);
 });
 
+app.get('/logout', function (req, res) {
+  delete req.session.oauth_access_token;
+  delete req.session.oauth_access_token_secret;
+  res.send(req.query.callback + '()', {'content-type' : 'text/javascript'}, 200);
+});
+
 app.listen(8080);

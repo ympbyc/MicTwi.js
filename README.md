@@ -9,7 +9,10 @@
 
 * push /tofucha to your server and let it run server.js on node.
 * host /MicTwi/mictwi.js wherever you prefer.
-* include a &lt;script&gt; tag pointing your mictwi.js
+* in your html, include a &lt;script&gt; tag pointing your mictwi.js.
+
+##Usage example
+<pre>(MicTwi.generatePostAPI('statuses/update.json'))({status: 'Posting via MicTwi'}, function(json){alert(json)});</pre>
 
 ##Author
 ympbyc
