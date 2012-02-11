@@ -9,7 +9,7 @@ MicTwi.oauth(function(){
   var tweet = MicTwi.generatePostAPI('statuses/update');
   tweet({status: "whatever"}, function(j){console.log(j)});
 });
-&lt;/script&gt;&lt;/pre&gt;
+&lt;/script&gt;</pre>
 
 ##Installation
 * register an application at http://dev.twitter.com/
