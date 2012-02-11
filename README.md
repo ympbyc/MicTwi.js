@@ -1,5 +1,16 @@
 #MicTwi.js and its OAuth proxy server
 
+
+##Use it!
+<pre><script src="https://github.com/ympbyc/MicTwi.js/MicTwi/mictwi.js"></script>
+
+<script type="text/javascript">
+MicTwi.oauth(function(){
+  var tweet = MicTwi.generatePostAPI('statuses/update');
+  tweet({status: "whatever"}, function(j){console.log(j)});
+});
+</script></pre>
+
 ##Installation
 * register an application at http://dev.twitter.com/
 * replace certain keys in /tofucha/server.js.
