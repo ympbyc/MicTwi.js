@@ -2,7 +2,7 @@
 
 
 ##Use it!
-<pre>&lt;script src="https://github.com/ympbyc/MicTwi.js/MicTwi/mictwi.js"&gt;&lt;/script&gt;
+<pre>&lt;script src="https://raw.github.com/ympbyc/MicTwi.js/MicTwi/mictwi.js"&gt;&lt;/script&gt;
 
 &lt;script type="text/javascript"&lt;
 MicTwi.oauth(function(){
