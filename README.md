@@ -2,14 +2,14 @@
 
 
 ##Use it!
-<pre><script src="https://github.com/ympbyc/MicTwi.js/MicTwi/mictwi.js"></script>
+<pre>&lt;script src="https://github.com/ympbyc/MicTwi.js/MicTwi/mictwi.js"&gt;&lt;/script&gt;
 
-<script type="text/javascript">
+&lt;script type="text/javascript"&lt;
 MicTwi.oauth(function(){
   var tweet = MicTwi.generatePostAPI('statuses/update');
   tweet({status: "whatever"}, function(j){console.log(j)});
 });
-</script></pre>
+&lt;/script&gt;&lt;/pre&gt;
 
 ##Installation
 * register an application at http://dev.twitter.com/
