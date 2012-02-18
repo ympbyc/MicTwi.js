@@ -73,8 +73,7 @@ app.get('/auth/twitter/callback', function(req, res){
 });
 
 app.get('/post/twitter', function (req, res) {
-    console.log(req.query.param);
-    if (!req.session.oauth_access_token || req.url !== req.session.allowed_origin){res.send(401); return;} //unauthorized
+    if (!req.session.oauth_access_token || req.headers.referer !== req.session.allowed_origin){res.send(401); return;} //unauthorized
     try {
       if (!req.query.api) throw 'no api specified';
       var jsonParam = JSON.parse(req.query.param);
@@ -97,8 +96,7 @@ app.get('/post/twitter', function (req, res) {
 });
 
 app.get('/get/twitter', function (req, res) {
-    console.log("https://api.twitter.com/1/" + req.query.api + req.query.param);
-    if (!req.session.oauth_access_token || req.url !== req.session.allowed_origin){res.send(401); return;} //unauthorized
+    if (!req.session.oauth_access_token || req.headers.referer !== req.session.allowed_origin){res.send(401); return;} //unauthorized
     try {
       if (!req.query.api) throw 'no api specified';
       var jsonParam = JSON.parse(req.query.param);
@@ -121,7 +119,7 @@ app.get('/get/twitter', function (req, res) {
 });
 
 app.get('/is/authorized', function (req, res) {
-  if (!!req.session.oauth_access_token && !!req.session.oauth_access_token_secret && req.url === req.session.allowed_origin)
+  if (!!req.session.oauth_access_token && !!req.session.oauth_access_token_secret && req.headers.referer === req.session.allowed_origin)
     res.send(req.query.callback + '(true);', {'content-type' : 'text/javascript'}, 200);
   else
     res.send(req.query.callback + '(false);', {'content-type' : 'text/javascript'}, 200);
@@ -130,6 +128,7 @@ app.get('/is/authorized', function (req, res) {
 app.get('/logout', function (req, res) {
   delete req.session.oauth_access_token;
   delete req.session.oauth_access_token_secret;
+  delete req.session.allowed_origin;
   res.send(req.query.callback + '()', {'content-type' : 'text/javascript'}, 200);
 });
 

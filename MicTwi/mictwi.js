@@ -79,7 +79,7 @@ var MicTwi = (function (){
   }
 
   var MicTwi = {
-    oauthProxy: "http://proxy-you-have-set-up", // Proxy server that handles OAuth requests.
+    oauthProxy: "http://tofuchaproxy-ympbyc.dotcloud.com/", // Proxy server that handles OAuth requests.
     callbackUrl: location.origin + location.pathname, // Page to return after OAuth Authorization.
         
     /* call whent if authorized, otherwise whenf will be called */
