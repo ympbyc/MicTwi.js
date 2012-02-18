@@ -38,7 +38,7 @@ app.dynamicHelpers({
 });
 
 app.get('/', function (req, res) {
-    res.send('Usage: http://tofuchaproxy-ympbyc.dotcloud.com/auth/twitter?callback=http://your.app/foo');
+    res.send('Usage: /auth/twitter?callback=http://your.app/foo');
 });
 
 app.get('/auth/twitter', function (req, res) {
@@ -65,7 +65,8 @@ app.get('/auth/twitter/callback', function(req, res){
                 } else {
                   req.session.oauth_access_token = oauth_access_token;
                   req.session.oauth_access_token_secret = oauth_access_token_secret;
-                  res.redirect(req.session.callback + '?authorized=yes');
+                  req.session.allowed_origin = req.session.callback;
+                  res.redirect(req.session.callback);
                 }
             });
    }
@@ -73,7 +74,7 @@ app.get('/auth/twitter/callback', function(req, res){
 
 app.get('/post/twitter', function (req, res) {
     console.log(req.query.param);
-    if (!req.session.oauth_access_token){res.send(401); return;} //unauthorized
+    if (!req.session.oauth_access_token || req.url !== req.session.allowed_origin){res.send(401); return;} //unauthorized
     try {
       if (!req.query.api) throw 'no api specified';
       var jsonParam = JSON.parse(req.query.param);
@@ -97,7 +98,7 @@ app.get('/post/twitter', function (req, res) {
 
 app.get('/get/twitter', function (req, res) {
     console.log("https://api.twitter.com/1/" + req.query.api + req.query.param);
-    if (!req.session.oauth_access_token){res.send(401); return;} //unauthorized
+    if (!req.session.oauth_access_token || req.url !== req.session.allowed_origin){res.send(401); return;} //unauthorized
     try {
       if (!req.query.api) throw 'no api specified';
       var jsonParam = JSON.parse(req.query.param);
@@ -120,7 +121,7 @@ app.get('/get/twitter', function (req, res) {
 });
 
 app.get('/is/authorized', function (req, res) {
-  if (!!req.session.oauth_access_token && !!req.session.oauth_access_token_secret)
+  if (!!req.session.oauth_access_token && !!req.session.oauth_access_token_secret && req.url === req.session.allowed_origin)
     res.send(req.query.callback + '(true);', {'content-type' : 'text/javascript'}, 200);
   else
     res.send(req.query.callback + '(false);', {'content-type' : 'text/javascript'}, 200);
