@@ -8,18 +8,21 @@
   <style type="text/css">
   <!--
     body{
-      font-size: 13px;
+      font-size: 14px;
       margin: 10px;
     }
   -->
   </style>
 </head>
-<body>
-  <div id="control">
+<body style="padding:5px 8% 5px 8%;">
+  <div id="control" style="padding:4px; background: #FFF; border-radius: 10px">
     <p>とにかく小さく簡単に。</p>
-    <textarea id="tweet" style="width: 80%; height:4em;"></textarea><br />
+    <textarea id="tweet" style="width:95%; height:4em;"></textarea><br />
   </div>
-  <div id="console_div"></div>
+  <div id="console_div" style="padding: 4px; background: #FFF; filter:alpha(opacity=98); opacity:0.98; border-radius: 10px">
+    <div id='100000000000000000' class="entry"></div>
+  </div>
+  <div><a href="javascript: MicTwi.logout(function(){location.reload()})">ログアウト</a></div>
   
   <script type="text/javascript">
     window.onload = function () {
@@ -34,23 +37,69 @@
     function initialize () {
       MicTwi.oauth(function(){
         {
-          jQuery("<button>つぶやく</button>").click(tweet).appendTo("#control");
+          jQuery("<button>つぶやく</button>").click(function(){
+              tweet(jQuery('#tweet')[0].value/*, function(){ setTimeout(getTimeline, 2000);} */);
+            }).css({width : '8em', height : '3em'}).appendTo("#control");
+          //ctrl+enter to tweet
+          jQuery('#tweet').keydown(function (e) {
+            if (e.ctrlKey && e.keyCode == 13) {
+              tweet(jQuery('#tweet')[0].value);
+            }
+          });
+          (MicTwi.generateGetAPI('statuses/user_timeline'))
+          ({count:1},function (j) {document.body.style['background-image'] = 
+            'url("' + j[0].user.profile_background_image_url + '")'; });
         }
         getTimeline();
-        setInterval(function(){getTimeline()}, 1000 * 40);
+        setInterval(function(){getTimeline()}, 1000 * 20);
       });
     }
-    function tweet() {
-      (MicTwi.generatePostAPI('statuses/update.json'))({status: $('#tweet')[0].value});
+    function tweet(str, func) {
+      func = func || function(){};
+      (MicTwi.generatePostAPI('statuses/update.json'))({status: str}, func);
       jQuery("#tweet")[0].value = '';
     }
+    function favorite (id) {
+      (MicTwi.generatePostAPI('favorites/create/' + id))({'id': id}, 
+          function () {
+            var tgt = jQuery('div #' + id + ' a')[0];
+            tgt.innerText = '★';
+            tgt.onclick = function(){unfavorite (id)};
+          });
+    }
+    function unfavorite (id) {
+      (MicTwi.generatePostAPI('favorites/destroy/' + id))({id: id},
+        function () {jQuery('div #' + id + ' a')[0].innerText = '☆';});
+    }
+    function retweet (id) {
+      (MicTwi.generatePostAPI('statuses/retweet/' + id))({'id': id}, 
+          function () {
+            var tgt = jQuery('div #' + id + ' a')[1];
+            tgt.innerText = '';
+            tgt.href = '';
+            tgt.onclick = undefined;
+          });
+    }
     function getTimeline () {
-      MicTwi.generateGetAPI('statuses/home_timeline.json')({count:20}, function(res){
-        var str = '';
-        for (var i=0; i<res.length; ++i) {
-          str += res[i].user.screen_name + ":" + res[i].text + "\n";
+      var s_id = jQuery('#console_div div.entry')[0].id;
+      MicTwi.generateGetAPI('statuses/home_timeline.json')({count:20, 'since_id': s_id}, function(res){
+        for (var i=res.length-1; i>=0; --i) {
+          var div = document.createElement('div');
+          if (s_id === (div.id = res[i].id_str)) continue;
+          div.className = 'entry';
+          div.style.minHeight = '60px';
+          div.style.margin = '2px';
+          div.addEventListener('click', function (e) {e.target.style.border = 'solid black 1px';
+                                      e.target.addEventListener('click', function (e) {e.target.style.border = 'none';});
+                              });
+          div.innerHTML = (['<image align="left" style="width:48px;height:48px" src="', 
+                            res[i].user.profile_image_url,  '" alt="" /> ',
+                            res[i].user.screen_name, ":<br />", 
+                            (res[i].text).replace(/(http:\/\/t.co\/\w+\s?)/, '<a href="$1">$1</a>'), 
+                            '&nbsp;<a href="javascript:void(0)" onclick="favorite(\'', res[i].id_str, '\')">☆</a>&nbsp;',
+                            '<a href="javascript:void(0)" onclick="retweet(\'', res[i].id_str, '\')">RT</a>&nbsp;',].join(''));
+          document.getElementById('console_div').insertBefore(div, jQuery('#console_div div.entry')[0]);
         }
-        jQuery("#console_div")[0].innerText = str;
       });
     }
   </script>

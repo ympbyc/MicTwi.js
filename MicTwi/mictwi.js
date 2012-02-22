@@ -80,14 +80,14 @@ var MicTwi = (function (){
   }
 
   var MicTwi = {
-    oauthProxy: "http://tofuchaproxy-ympbyc.dotcloud.com/", // Proxy server that handles OAuth requests.
+    oauthProxy: "https://tofuchaproxy-ympbyc.dotcloud.com", // Proxy server that handles OAuth requests.
     callbackUrl: location.origin + location.pathname, // Page to return after OAuth Authorization.
         
     /* call whent if authorized, otherwise whenf will be called */
     ifAuthorized: function(whent, whenf) {
       whenf = whenf || function(){};
       jsonp({
-        url: MicTwi.oauthProxy + 'is/authorized',
+        url: MicTwi.oauthProxy + '/is/authorized',
         data: {dummy: 'dummy'}, jsonp: 'callback', 
         success: function (bool) { bool? whent() : whenf(); }
       });
@@ -103,7 +103,7 @@ var MicTwi = (function (){
     
     logout: function (callback) {
       jsonp({
-        url : MicTwi.oauthProxy + 'logout',
+        url : MicTwi.oauthProxy + '/logout',
         data : {}, jsonp : 'callback',
         success : callback
       });
