@@ -9,6 +9,7 @@
  *   generatePostAPI: function (api) { //same as above but with POST method. 
  *   oauth: function (callback) { //redirect users to twitter's OAuth prompt only when they are not authorized.
  *   ifAuthorized: function (whent, whenf) { //call whent if authorized, otherwise whenf will be called.
+ *   logout: function (callback) { //destroy the session
  *   
  * Example:
  * MicTwi.oauth(function () {
@@ -86,7 +87,7 @@ var MicTwi = (function (){
     ifAuthorized: function(whent, whenf) {
       whenf = whenf || function(){};
       jsonp({
-        url: 'http://tofuchaproxy-ympbyc.dotcloud.com/is/authorized',
+        url: MicTwi.oauthProxy + 'is/authorized',
         data: {dummy: 'dummy'}, jsonp: 'callback', 
         success: function (bool) { bool? whent() : whenf(); }
       });
@@ -99,6 +100,14 @@ var MicTwi = (function (){
           location.href = MicTwi.oauthProxy + '/auth/twitter?callback=' + MicTwi.callbackUrl;
         });
     },
+    
+    logout: function (callback) {
+      jsonp({
+        url : MicTwi.oauthProxy + 'logout',
+        data : {}, jsonp : 'callback',
+        success : callback
+      });
+    }
   }
   
   /* For APIs which take variables (often they are user-ids or status-ids), 
