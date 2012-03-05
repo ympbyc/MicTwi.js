@@ -11,6 +11,10 @@
       font-size: 14px;
       margin: 10px;
     }
+    div.entry{
+      min-height : 60px;
+      margin : 2px;
+    }
   -->
   </style>
 </head>
@@ -26,6 +30,7 @@
   
   <script type="text/javascript">
     window.onload = function () {
+      MicTwi.callbackUrl = "http://ympbyc.kuronowish.com/akarin/mictwi.html" //Fit this to your condition
       MicTwi.ifAuthorized(
         initialize,
         function(){
@@ -57,7 +62,7 @@
     function tweet(str, func) {
       func = func || function(){};
       (MicTwi.generatePostAPI('statuses/update.json'))({status: str}, func);
-      jQuery("#tweet")[0].value = '';
+      jQuery("#tweet").val('');
     }
     function favorite (id) {
       (MicTwi.generatePostAPI('favorites/create/' + id))({'id': id}, 
@@ -80,28 +85,25 @@
             tgt.onclick = undefined;
           });
     }
-    function getTimeline () {
-      var s_id = jQuery('#console_div div.entry')[0].id;
-      MicTwi.generateGetAPI('statuses/home_timeline.json')({count:20, 'since_id': s_id}, function(res){
+    var s_id = jQuery('#console_div div.entry')[0].id;
+    var getHomeTL = MicTwi.generateGetAPI('statuses/home_timeline.json');
+    var opt = {count:20, 'since_id': s_id};
+    var drawTL = function(res){
         for (var i=res.length-1; i>=0; --i) {
           var div = document.createElement('div');
           if (s_id === (div.id = res[i].id_str)) continue;
           div.className = 'entry';
-          div.style.minHeight = '60px';
-          div.style.margin = '2px';
-          div.addEventListener('click', function (e) {e.target.style.border = 'solid black 1px';
-                                      e.target.addEventListener('click', function (e) {e.target.style.border = 'none';});
-                              });
+          div.addEventListener('click', function (e) {e.target.style.border = 'solid black 1px';});
           div.innerHTML = (['<image align="left" style="width:48px;height:48px" src="', 
                             res[i].user.profile_image_url,  '" alt="" /> ',
                             res[i].user.screen_name, ":<br />", 
                             (res[i].text).replace(/(http:\/\/t.co\/\w+\s?)/, '<a href="$1">$1</a>'), 
                             '&nbsp;<a href="javascript:void(0)" onclick="favorite(\'', res[i].id_str, '\')">☆</a>&nbsp;',
-                            '<a href="javascript:void(0)" onclick="retweet(\'', res[i].id_str, '\')">RT</a>&nbsp;',].join(''));
+                            '<a href="javascript:void(0)" onclick="retweet(\'', res[i].id_str, '\')">RT</a>&nbsp;'].join(''));
           document.getElementById('console_div').insertBefore(div, jQuery('#console_div div.entry')[0]);
         }
-      });
     }
+    function getTimeline () {getHomeTL(opt, drawTL);}
   </script>
 </body>
 </html>
