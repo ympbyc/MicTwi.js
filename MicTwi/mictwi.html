@@ -86,27 +86,25 @@
           });
     }   
     var getHomeTL = MicTwi.generateGetAPI('statuses/home_timeline.json');
-    var drawTL = function(res){
-        for (var i=res.length-1; i>=0; --i) {
-          var div = document.createElement('div');
-          if (this.s_id === (div.id = res[i].id_str)) continue;
-          div.className = 'entry';
-          div.addEventListener('click', function (e) {e.target.style.border = 'solid black 1px';});
-          div.innerHTML = (['<image align="left" style="width:48px;height:48px" src="', 
-                            res[i].user.profile_image_url,  '" alt="" /> ',
-                            res[i].user.screen_name, ":<br />", 
-                            (res[i].text).replace(/(http:\/\/t.co\/\w+\s?)/, '<a href="$1">$1</a>'), 
-                            '&nbsp;<a href="javascript:void(0)" onclick="favorite(\'', res[i].id_str, '\')">☆</a>&nbsp;',
-                            '<a href="javascript:void(0)" onclick="retweet(\'', res[i].id_str, '\')">RT</a>&nbsp;'].join(''));
-          document.getElementById('console_div').insertBefore(div, jQuery('#console_div div.entry')[0]);
-        }
-    }
     function getTimeline () {
-      var s_id = jQuery('#console_div div.entry')[0].id;
-      getHomeTL(
-        {count : 20, 
-         'since_id': s_id}, 
-        drawTL.bind({'s_id': s_id}));
+      var s_id = jQuery('#console_div div.entry').attr('id');
+      getHomeTL({count : 20,  'since_id': s_id}, 
+        function(res){
+          for (var i=res.length-1; i>=0; --i) {
+            var item = (!!res[i].retweeted_status) ? res[i].retweeted_status : res[i];
+            var div = document.createElement('div');
+            if (s_id === (div.id = item.id_str)) continue;
+            div.className = 'entry';
+            div.addEventListener('click', function (e) {e.target.style.border = 'solid black 1px';});
+            div.innerHTML = (['<image align="left" style="width:48px;height:48px" src="', 
+                              item.user.profile_image_url,  '" alt="" /> ',
+                              item.user.screen_name, ":<br />", 
+                              (item.text).replace(/(http:\/\/t.co\/\w+\s?)/, '<a href="$1">$1</a>'), 
+                              '&nbsp;<a href="javascript:void(0)" onclick="favorite(\'', item.id_str, '\')">☆</a>&nbsp;',
+                              '<a href="javascript:void(0)" onclick="retweet(\'', item.id_str, '\')">RT</a>&nbsp;'].join(''));
+            document.getElementById('console_div').insertBefore(div, jQuery('#console_div div.entry')[0]);
+          }
+      });
     }
   </script>
 </body>
