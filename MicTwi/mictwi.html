@@ -87,7 +87,6 @@
     }
     var s_id = jQuery('#console_div div.entry')[0].id;
     var getHomeTL = MicTwi.generateGetAPI('statuses/home_timeline.json');
-    var opt = {count:20, 'since_id': s_id};
     var drawTL = function(res){
         for (var i=res.length-1; i>=0; --i) {
           var div = document.createElement('div');
@@ -103,7 +102,7 @@
           document.getElementById('console_div').insertBefore(div, jQuery('#console_div div.entry')[0]);
         }
     }
-    function getTimeline () {getHomeTL(opt, drawTL);}
+    function getTimeline () {getHomeTL({count:20, 'since_id': s_id}, drawTL);}
   </script>
 </body>
 </html>
