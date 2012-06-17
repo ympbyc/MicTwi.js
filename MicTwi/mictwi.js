@@ -110,9 +110,6 @@ var MicTwi = (function (){
     }
   }
   
-  /* For APIs which take variables (often they are user-ids or status-ids), 
-   * you ought to generate an API function on the fly with MicTwi.generateGetAPI() / MicTwi.generatePostAPI.
-   * eg: MicTwi.favorites.create = MicTwi.generatePostAPI('favorites/create/' + 123456 + '.json'); */
   MicTwi.generateGetAPI = generateGetAPI;
   MicTwi.generatePostAPI = generatePostAPI; 
   
